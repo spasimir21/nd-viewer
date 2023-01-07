@@ -1,3 +1,6 @@
+# Parcel@2.5.0 Cache
+.parcel-cache
+
 # Logs
 logs
 *.log

@@ -1,0 +1,24 @@
+{
+  "name": "n-geometry-viewer",
+  "version": "1.0.0",
+  "description": "A N-D geometry visualizer",
+  "source": "index.html",
+  "scripts": {
+    "start": "parcel",
+    "build": "parcel build"
+  },
+  "devDependencies": {
+    "@parcel/transformer-sass": "^2.8.2",
+    "parcel": "^2.5.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/spasimir21/n-geometry-viewer.git"
+  },
+  "homepage": "https://github.com/spasimir21/n-geometry-viewer#readme",
+  "bugs": {
+    "url": "https://github.com/spasimir21/n-geometry-viewer/issues"
+  },
+  "author": "Spasimir Pavlov",
+  "license": "MIT"
+}
