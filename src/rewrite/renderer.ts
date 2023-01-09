@@ -6,7 +6,7 @@ interface RenderOptions<TPipelineArgs> {
     backgroundColor: string;
     pointColor: string;
     pointSize: number;
-    edgeColor: string;
+    edgeColor: string | ((index: number) => string);
     edgeSize: number;
     drawPoints: boolean;
     drawEdges: boolean;
@@ -18,11 +18,7 @@ interface RenderOptions<TPipelineArgs> {
   pipeline: Pipeline<TPipelineArgs>;
 }
 
-function render<TPipelineArgs>(
-  ctx: CanvasRenderingContext2D,
-  options: RenderOptions<TPipelineArgs>,
-  args: TPipelineArgs
-) {
+function render<TPipelineArgs>(ctx: CanvasRenderingContext2D, options: RenderOptions<TPipelineArgs>, args: TPipelineArgs) {
   const dimensions = options.pipeline.inDimensions;
 
   const pointBuffer = options.pipeline.process(options.mesh.pointBuffer, args);
@@ -34,10 +30,14 @@ function render<TPipelineArgs>(
   ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
   if (options.appearance.drawEdges) {
-    ctx.strokeStyle = options.appearance.edgeColor;
+    const useDynamicEdgeColor = typeof options.appearance.edgeColor === 'function';
+
+    if (!useDynamicEdgeColor) ctx.strokeStyle = options.appearance.edgeColor as string;
     ctx.lineWidth = options.appearance.edgeSize;
 
     for (let offset = 0; offset < edgeBuffer.length; offset += 2) {
+      if (useDynamicEdgeColor) ctx.strokeStyle = (options.appearance.edgeColor as any)(offset / 2);
+
       ctx.beginPath();
       let pointBufferOffset = edgeBuffer[offset] * dimensions;
       ctx.moveTo(
