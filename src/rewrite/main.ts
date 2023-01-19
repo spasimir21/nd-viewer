@@ -9,38 +9,47 @@ import { aspectRatio } from './aspectRatio';
 import { rotate } from './rotateOnPlane';
 import { translate } from './translate';
 import { scale } from './scale';
+import { generateNSphereEdges, generateNSpherePoints } from './nsphere';
 
 const CANVAS_SIZE = [1000, 563];
 
 type PipelineArgs = { angle: number };
 
-const _3DPipeline = createPipeline<PipelineArgs>({
-  name: '3-D Pipeline',
-  dimensions: 3,
-  steps: [
-    scale({ scale: [0.5, 0.5, 0.5] }),
-    rotate({ plane: [0, 1] }),
-    rotate({ plane: [0, 2], invert: true }),
-    rotate({ plane: [1, 2] }),
-    translate({ translation: [0, 0, 2] }),
-    perspectiveProjection({ fov: 90, finalDimensions: 2 }),
-    aspectRatio({ aspectRatio: CANVAS_SIZE })
-  ]
-});
-
-// const _4DPipeline = createPipeline<PipelineArgs>({
-//   name: '4-D Pipeline',
-//   dimensions: 4,
+// const _3DPipeline = createPipeline<PipelineArgs>({
+//   name: '3-D Pipeline',
+//   dimensions: 3,
 //   steps: [
-//     scale({ scale: [0.5, 0.5, 0.5, 0.5] }),
-//     rotate({ plane: [0, 2] }),
-//     rotate({ plane: [1, 3] }),
-//     translate({ translation: [0, 0, 4, 4] }),
-//     stereographicProjection({ distance: 5, finalDimensions: 2 }),
+//     scale({ scale: [0.5, 0.5, 0.5] }),
+//     rotate({ plane: [0, 1] }),
+//     rotate({ plane: [0, 2], invert: true }),
+//     rotate({ plane: [1, 2] }),
+//     translate({ translation: [0, 0, 2] }),
 //     perspectiveProjection({ fov: 90, finalDimensions: 2 }),
 //     aspectRatio({ aspectRatio: CANVAS_SIZE })
 //   ]
 // });
+
+const _4DPipeline = createPipeline<PipelineArgs>({
+  name: '4-D Pipeline',
+  dimensions: 4,
+  steps: [
+    scale({ scale: [0.5, 0.5, 0.5, 0.5] }),
+    // rotate({ plane: [0, 2] }),
+    // rotate({ plane: [0, 1] }),
+    // rotate({ plane: [1, 2] }),
+    // rotate({ plane: [1, 3] }),
+    rotate({ plane: [0, 1] }),
+    rotate({ plane: [0, 2] }),
+    rotate({ plane: [0, 3] }),
+    rotate({ plane: [1, 2] }),
+    rotate({ plane: [1, 3] }),
+    rotate({ plane: [2, 3] }),
+    translate({ translation: [0, 0, 2, 4] }),
+    stereographicProjection({ distance: 5, finalDimensions: 2 }),
+    perspectiveProjection({ fov: 90, finalDimensions: 2 }),
+    aspectRatio({ aspectRatio: CANVAS_SIZE })
+  ]
+});
 
 // const _5DPipeline = createPipeline<PipelineArgs>({
 //   name: '5-D Pipeline',
@@ -51,17 +60,17 @@ const _3DPipeline = createPipeline<PipelineArgs>({
 //     // rotate({ plane: [1, 3] }),
 //     // rotate({ plane: [1, 4] }),
 //     // rotate({ plane: [3, 4] }),
-//     // rotate({ plane: [0, 1] }),
-//     // rotate({ plane: [0, 2] }),
-//     // rotate({ plane: [0, 3] }),
-//     // rotate({ plane: [0, 4] }),
-//     // rotate({ plane: [1, 2] }),
-//     // rotate({ plane: [1, 3] }),
-//     // rotate({ plane: [1, 4] }),
-//     // rotate({ plane: [2, 3] }),
-//     // rotate({ plane: [2, 4] }),
-//     // rotate({ plane: [3, 4] }),
-//     translate({ translation: [0, 0, 4, 4, 3] }),
+//     rotate({ plane: [0, 1] }),
+//     rotate({ plane: [0, 2] }),
+//     rotate({ plane: [0, 3] }),
+//     rotate({ plane: [0, 4] }),
+//     rotate({ plane: [1, 2] }),
+//     rotate({ plane: [1, 3] }),
+//     rotate({ plane: [1, 4] }),
+//     rotate({ plane: [2, 3] }),
+//     rotate({ plane: [2, 4] }),
+//     rotate({ plane: [3, 4] }),
+//     translate({ translation: [0, 0, 2, 4, 4] }),
 //     stereographicProjection({ distance: 5, finalDimensions: 2 }),
 //     stereographicProjection({ distance: 5.1, finalDimensions: 2 }),
 //     perspectiveProjection({ fov: 90, finalDimensions: 2 }),
@@ -103,26 +112,29 @@ const _3DPipeline = createPipeline<PipelineArgs>({
 //   ]
 // });
 
-console.log(_3DPipeline.code);
+// const _2DPipeline = createPipeline<PipelineArgs>({
+//   name: '2-D Pipeline',
+//   dimensions: 2,
+//   steps: [scale({ scale: [0.5, 0.5] }), rotate({ plane: [0, 1] }), aspectRatio({ aspectRatio: CANVAS_SIZE })]
+// });
 
-// const edgeColors = ['red', 'green', 'blue', 'yellow'];
+console.log(_4DPipeline.code);
 
 const renderOptions: RenderOptions<PipelineArgs> = {
   appearance: {
     backgroundColor: 'black',
-    pointColor: 'purple',
-    pointSize: 2,
+    pointColor: 'red',
+    pointSize: 3,
     edgeColor: 'purple',
-    // edgeColor: i => edgeColors[Math.floor(i / 12)],
-    edgeSize: 3,
-    drawPoints: true,
+    edgeSize: 1,
+    drawPoints: false,
     drawEdges: true
   },
   mesh: {
-    pointBuffer: pointsToPointBuffer(3, generate3DSpherePoints(1, 20, 20)),
-    edgeBuffer: edgesToEdgeBuffer(generate3DSphereEdges(20, 20))
+    pointBuffer: pointsToPointBuffer(4, generateNSpherePoints(1, [10, 10, 10])),
+    edgeBuffer: edgesToEdgeBuffer(generateNSphereEdges([10, 10, 10]))
   },
-  pipeline: _3DPipeline
+  pipeline: _4DPipeline
 };
 
 const pipelineArgs: PipelineArgs = { angle: 0 };
@@ -130,7 +142,7 @@ const pipelineArgs: PipelineArgs = { angle: 0 };
 function drawLoop(ctx: CanvasRenderingContext2D) {
   render(ctx, renderOptions, pipelineArgs);
 
-  pipelineArgs.angle += 90 / 60;
+  pipelineArgs.angle += 45 / 60;
 
   requestAnimationFrame(() => drawLoop(ctx));
 }

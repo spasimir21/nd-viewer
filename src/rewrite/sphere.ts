@@ -26,7 +26,7 @@ function generate3DSpherePoints(r: number, n: number, m: number): [number, numbe
 function generate3DSphereEdges(n: number, m: number): [number, number][] {
   const edges: [number, number][] = [];
 
-  for (let i = 1; i <= n; i++) edges.push([0, i]);
+  // for (let i = 1; i <= n; i++) edges.push([0, i]);
 
   for (let i = 0; i < m; i++) {
     for (let j = 1; j < n; j++) {
@@ -42,7 +42,7 @@ function generate3DSphereEdges(n: number, m: number): [number, number][] {
     }
   }
 
-  for (let i = 0; i <= n; i++) edges.push([1 + n * (m - 1) + i, 1 + n * m]);
+  // for (let i = 0; i <= n; i++) edges.push([1 + n * (m - 1) + i, 1 + n * m]);
 
   return edges;
 }
